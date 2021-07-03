@@ -8,34 +8,34 @@
 SoftwareSerial EspSerial(2, 3);
 ESP8266 wifi(&EspSerial);
 
-char auth[] = "";
-char ssid[] = "";
-char pass[] = "";
-
 const int RAIN = 10;
 const int GAS = 9;
+
 const int Out = 11;
 const int In = 12;
 
 int Count = 0;
 
-WidgetLED led(V1);
-WidgetLED led1(V2);
+WidgetLED led1(V1);
+WidgetLED led2(V2);
 WidgetLCD lcd(V3);
+
 BlynkTimer timer;
+
 void Sensor()
 {
   if (digitalRead(In) == HIGH)
   {
     Count = Count + 1;
+
     lcd.clear();
     lcd.print(0, 0, "Person In Room:");
     lcd.print(0, 1, Count);
   }
-
   else if (digitalRead(Out) == HIGH)
   {
     Count = Count - 1;
+
     lcd.clear();
     lcd.print(0, 0, "Person In Room:");
     lcd.print(0, 1, Count);
@@ -43,13 +43,13 @@ void Sensor()
 
   if (digitalRead(RAIN) == LOW)
   {
-    led.on();
+    led1.on();
     Blynk.notify("Its Raing Outside, Dont sorget Your Umbrella.");
   }
 
   if (digitalRead(GAS) == LOW)
   {
-    led1.on();
+    led2.on();
     Blynk.notify("There Is a Gas Leak, Please Evacuate The House");
   }
 
@@ -57,8 +57,9 @@ void Sensor()
   {
     lcd.print(0, 0, "Person In Room:");
     lcd.print(0, 1, Count);
-    led.off();
+
     led1.off();
+    led2.off();
   }
 }
 
@@ -67,7 +68,8 @@ void setup()
   Serial.begin(9600);
   EspSerial.begin(ESP8266_BAUD);
   delay(10);
-  Blynk.begin(auth, wifi, ssid, pass);
+
+  Blynk.begin("Auth", "SSID", "Pass");
 
   pinMode(In, INPUT);
   pinMode(Out, INPUT);
@@ -79,6 +81,7 @@ void setup()
 
   timer.setInterval(100l, Sensor);
 }
+
 void loop()
 {
   Blynk.run();
