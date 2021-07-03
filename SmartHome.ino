@@ -69,7 +69,7 @@ void setup()
   EspSerial.begin(ESP8266_BAUD);
   delay(10);
 
-  Blynk.begin("Auth", "SSID", "Pass");
+  Blynk.begin("Auth", "SSID", "Password");
 
   pinMode(In, INPUT);
   pinMode(Out, INPUT);
